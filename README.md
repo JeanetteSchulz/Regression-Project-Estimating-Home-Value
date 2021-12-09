@@ -1,14 +1,13 @@
-<img src="Images/zillow_logo.png" alt="Zillow Logo" title="Zillow Logo" width="300" height="300" align="center"/>
+<div align="center">
+
+<img src="Images/zillow_logo.png" alt="Zillow Logo" title="Zillow Logo" width="300" height="100" align="center"/>
     
-
-<div align="center">
-
 # README
-
-<div align="center">
 
 ### by Jeanette Schulz 2021-12-13
 
+</div align="center">
+    
 <hr style="border:2px solid blue"> </hr>
 
 # Project Goal
