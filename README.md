@@ -57,13 +57,13 @@ As the most-visited real estate website in the United States, Zillow and its aff
 
 | Feature                       | Datatype                  | Description                                                        |
 |:------------------------------|:--------------------------|:-------------------------------------------------------------------|
-| bathroomcnt                   | 2152852 non-null  float64 | Number of bathrooms in home including fractional bathrooms
-| bedroomcnt                    | 2152852 non-null  float64 | Number of bedrooms in home 
-| calculatedfinishedsquarefeet  | 2144379 non-null  float64 | Calculated total finished living area of the home 
-| fips                          | 2152863 non-null  float64 | Federal Information Processing Standard code 
-| yearbuilt                     | 2143526 non-null  float64 | The Year the principal residence was built 
-| taxvaluedollarcnt             | 2152370 non-null  float64 | The total tax assessed value of the parcel
-| taxamount                     | 2148421 non-null  float64 | The total property tax assessed for that assessment year
+| bathroomcnt                   | 52442 non-null  float64 | Number of bathrooms in home including fractional bathrooms
+| bedroomcnt                    | 52442 non-null  float64 | Number of bedrooms in home 
+| calculatedfinishedsquarefeet  | 52360 non-null  float64 | Calculated total finished living area of the home 
+| fips                          | 52442 non-null  float64 | Federal Information Processing Standard code 
+| yearbuilt                     | 52326 non-null  float64 | The Year the principal residence was built 
+| taxvaluedollarcnt             | 52441 non-null  float64 | The total tax assessed value of the parcel
+| regionidzip                   | 52416 non-null  float64 | Zip code in which the property is located
 
 <hr style="border:2px solid blue"> </hr>
 
