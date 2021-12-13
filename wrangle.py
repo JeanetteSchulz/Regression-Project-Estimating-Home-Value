@@ -35,11 +35,12 @@ def get_zillow_data():
         df =  pd.read_sql(""" SELECT bedroomcnt, 
                                      bathroomcnt, 
                                      calculatedfinishedsquarefeet, 
-                                     taxvaluedollarcnt, 
                                      yearbuilt, 
-                                     taxamount, 
-                                     fips
+                                     regionidzip, 
+                                     fips,
+                                     taxvaluedollarcnt
                               FROM properties_2017
+                              JOIN predictions_2017 USING (parcelid)
                               WHERE propertylandusetypeid = 261;""", 
                             get_connection('zillow')
                         )
@@ -48,10 +49,10 @@ def get_zillow_data():
     
     # Renaming column names to one's I like better
     df = df.rename(columns = {'bedroomcnt':'bedrooms', 
-                          'bathroomcnt':'bathrooms', 
-                          'calculatedfinishedsquarefeet':'area',
-                          'taxvaluedollarcnt':'tax_value', 
-                          'yearbuilt':'year_built'})   
+                              'bathroomcnt':'bathrooms', 
+                              'calculatedfinishedsquarefeet':'squarefeet',
+                              'taxvaluedollarcnt':'tax_value', 
+                              'yearbuilt':'year_built'})   
     return df
 ########################################### Clean Zillow Dataframe ###########################################
 
@@ -77,18 +78,22 @@ def remove_outliers(df, k, col_list):
 
 
 def prepare_zillow (zillow):
-    # Remove extreme outliers (there will still be a few, but our data should be less skewed)
-    zillow = remove_outliers(zillow, 1.5, ['bedrooms', 'bathrooms', 'area', 'tax_value', 'taxamount'])
-    
-    # Drop all data with nulls and zeros. This about 1.06% of the data, so shouldn't affect modeling
+    # Drop all data with nulls and zeros. This less than 1% of the data, so shouldn't affect modeling
     zillow = zillow.dropna()
-    zillow = zillow[(zillow.bathrooms != 0) | (zillow.bedrooms != 0)]
+    zillow = zillow[(zillow.bathrooms != 0) & (zillow.bedrooms != 0) & (zillow.squarefeet != 0)]
     
-    # Change the data types of these columns to int
+    # Change the data types of these columns to integers
+    zillow["regionidzip"] = zillow.regionidzip.astype(int)
+    zillow["bedrooms"] = zillow.bedrooms.astype(int)
     zillow["year_built"] = zillow.year_built.astype(int)
     zillow["fips"] = zillow.fips.astype(int)
-    zillow["bedrooms"] = zillow.bedrooms.astype(int)
+
+    # Remove extreme outliers (there will still be a few, but our data should be less skewed)
+    zillow = remove_outliers(zillow, 1.5, ['bedrooms', 'bathrooms', 'squarefeet', 'tax_value'])
     
+    # Feature Engineering
+    zillow['years_old'] = 2017 - zillow.year_built
+
     return zillow
 
 ########################################### Wrangle Zillow Dataframe ###########################################
@@ -115,11 +120,11 @@ def Min_Max_Scaler(train, validate, test):
     scaler = sklearn.preprocessing.MinMaxScaler()
 
     # 2. Fit the object (learn the min and max value)
-    scaler.fit(train[['taxamount', 'tax_value']])
+    scaler.fit(train[['tax_value', 'squarefeet']])
 
     # 3. Use the object (use the min, max to do the transformation)
-    train[['taxamount', 'tax_value']] = scaler.transform(train[['taxamount', 'tax_value']])
-    test[['taxamount', 'tax_value']] = scaler.transform(test[['taxamount', 'tax_value']])
-    validate[['taxamount', 'tax_value']] = scaler.transform(validate[['taxamount', 'tax_value']])
+    train[['tax_value', 'squarefeet']] = scaler.transform(train[['tax_value', 'squarefeet']])
+    test[['tax_value', 'squarefeet']] = scaler.transform(test[['tax_value', 'squarefeet']])
+    validate[['tax_value', 'squarefeet']] = scaler.transform(validate[['tax_value', 'squarefeet']])
     
     return train, validate, test
